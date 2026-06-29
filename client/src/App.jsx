@@ -14,6 +14,7 @@ import KnowledgeCenter from "./pages/KnowledgeCenter";
 import Approvals from "./pages/Approvals";
 import Analytics from "./pages/Analytics";
 import Memory from "./pages/Memory";
+import Settings from "./pages/Settings";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
               <Route path="/memory" element={<Memory />} />
               <Route path="/approvals" element={<Approvals />} />
               <Route path="/analytics" element={<Analytics />} />
+              <Route path="/settings" element={<Settings />} />
               {/* Catch-all redirect to dashboard */}
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Route>

@@ -36,6 +36,7 @@ export function Sidebar() {
     { name: "Memory", href: "/memory", icon: BrainCircuit },
     { name: "Approvals", href: "/approvals", icon: CheckSquare, badge: approvalsCount > 0 ? approvalsCount : null },
     { name: "Analytics", href: "/analytics", icon: BarChart3 },
+    { name: "Settings", href: "/settings", icon: Settings },
   ];
 
   return (
