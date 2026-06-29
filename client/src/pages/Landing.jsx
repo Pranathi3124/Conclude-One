@@ -102,7 +102,7 @@ export default function Landing() {
                       <span className="text-[8px] text-muted-foreground">$150k ARR at Risk</span>
                     </div>
                     <div className="bg-white border border-border p-2.5 rounded-lg shadow-sm flex flex-col items-center justify-center text-center">
-                      <BrainCircuit className="h-4 w-4 text-muted-foreground mb-1" />
+                      <Network className="h-4 w-4 text-muted-foreground mb-1" />
                       <span className="text-[10px] font-bold">RAG Agent</span>
                       <span className="text-[8px] text-muted-foreground">Pricing Policy Loaded</span>
                     </div>
@@ -161,6 +161,84 @@ export default function Landing() {
               <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
                 Approved business recommendations are written to MongoDB long-term memory for contextual injection in future workflows.
               </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Multi-Agent RAG Section */}
+        <section id="orchestration" className="bg-white border-t border-b border-border/60 py-20 px-6">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div className="lg:col-span-6 space-y-6">
+              <h2 className="text-3xl font-extrabold text-foreground tracking-tight">Multi-Agent RAG & Document Retrieval</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Connect your business playbooks, standard operational guidelines, and pricing charts. Conclude One queries a secure local vector store (ChromaDB) to inject hyper-specific policy guardrails directly into the agent reasoning context.
+              </p>
+              <ul className="space-y-3 text-sm font-semibold text-slate-700">
+                <li className="flex items-center"><CheckSquare className="h-4 w-4 text-emerald-500 mr-2" /> Synced Salesforce & HubSpot CRM profiles</li>
+                <li className="flex items-center"><CheckSquare className="h-4 w-4 text-emerald-500 mr-2" /> Automated compliance & discount policy matching</li>
+                <li className="flex items-center"><CheckSquare className="h-4 w-4 text-emerald-500 mr-2" /> Dynamic context routing based on customer sentiment</li>
+              </ul>
+            </div>
+            <div className="lg:col-span-6">
+              <div className="glass-panel p-6 rounded-xl bg-[#F9FAFB] border border-border/80 shadow-sm space-y-4">
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">Active Vector Stores</span>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center p-3 bg-white rounded border border-border/50">
+                    <span className="text-xs font-bold text-slate-800">Product Specifications Docs</span>
+                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">1,200 Vectors</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-white rounded border border-border/50">
+                    <span className="text-xs font-bold text-slate-800">Enterprise Pricing Playbooks</span>
+                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">12 Playbooks</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-white rounded border border-border/50">
+                    <span className="text-xs font-bold text-slate-800">Commercial Concession Limits</span>
+                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">45 Policies</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Decision Risk Section */}
+        <section id="security" className="max-w-7xl mx-auto px-6 py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div className="lg:col-span-6 order-last lg:order-first">
+              <div className="glass-panel p-6 rounded-xl bg-white border border-border/80 shadow-sm space-y-4">
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">Deal Risk Evaluator</span>
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs font-bold text-slate-700">
+                      <span>Contract Renewal Health</span>
+                      <span className="text-emerald-600">92%</span>
+                    </div>
+                    <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                      <div className="bg-emerald-500 h-full rounded-full" style={{ width: '92%' }} />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs font-bold text-slate-700">
+                      <span>Competitor Pressure Churn Risk</span>
+                      <span className="text-rose-600">14%</span>
+                    </div>
+                    <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                      <div className="bg-rose-500 h-full rounded-full" style={{ width: '14%' }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="lg:col-span-6 space-y-6">
+              <h2 className="text-3xl font-extrabold text-foreground tracking-tight">Quantitative Decision Risk Engines</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Our Risk Assessor Agent assigns numerical weights to critical business threats by parsing account records. Calculate renewal safety factors and compliance issues before formulating proposed deal concessions.
+              </p>
+              <ul className="space-y-3 text-sm font-semibold text-slate-700">
+                <li className="flex items-center"><CheckSquare className="h-4 w-4 text-indigo-500 mr-2" /> Live churn prediction matrix models</li>
+                <li className="flex items-center"><CheckSquare className="h-4 w-4 text-indigo-500 mr-2" /> Competitor evaluation detection from call transcripts</li>
+                <li className="flex items-center"><CheckSquare className="h-4 w-4 text-indigo-500 mr-2" /> Transparent agent confidence scores on every case</li>
+              </ul>
             </div>
           </div>
         </section>
