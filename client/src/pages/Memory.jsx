@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BrainCircuit, Database, Network, Search, Zap, Loader2, CheckCircle2, ArrowRight, ShieldAlert, Cpu, Sparkles, ChevronRight, Activity } from "lucide-react";
+import { Database, Network, Search, Zap, Loader2, CheckCircle2, ArrowRight, ShieldAlert, Cpu, Sparkles, ChevronRight, Activity, Bot, History } from "lucide-react";
 
 export default function Memory() {
   const [isSyncing, setIsSyncing] = useState(false);
@@ -18,7 +18,7 @@ export default function Memory() {
     { id: 4, label: "Email Threads", type: "input", x: 24, y: 68, icon: Activity, details: "Customer support cases, escalation tickets, and email threads.", status: "Synced" },
     
     // Agents (Top / Bottom clusters)
-    { id: 5, label: "Meeting Agent", type: "agent", x: 38, y: 25, icon: BrainCircuit, details: "Extracts key pain points, sentiment, and objections from calls.", status: "Idle" },
+    { id: 5, label: "Meeting Agent", type: "agent", x: 38, y: 25, icon: Bot, details: "Extracts key pain points, sentiment, and objections from calls.", status: "Idle" },
     { id: 6, label: "CRM Agent", type: "agent", x: 62, y: 25, icon: Database, details: "Parses account health metrics, ARR, and sales opportunity stage.", status: "Idle" },
     { id: 7, label: "Context RAG Engine", type: "agent", x: 42, y: 75, icon: Search, details: "Queries ChromaDB for semantically matching playbooks.", status: "Active" },
     { id: 8, label: "Risk Analyst Agent", type: "agent", x: 58, y: 75, icon: ShieldAlert, details: "Computes Deal Risk and Churn Risk parameters dynamically.", status: "Idle" },
@@ -30,7 +30,7 @@ export default function Memory() {
     // Outputs (Right column)
     { id: 11, label: "Executive Briefs", type: "output", x: 76, y: 46, icon: CheckCircle2, details: "Recommendations, priorities, and confidence score outputs.", status: "Active" },
     { id: 12, label: "Approved Actions", type: "output", x: 85, y: 32, icon: ArrowRight, details: "Actions approved by human review and scheduled for execution.", status: "Executed" },
-    { id: 13, label: "Long-Term Memory Node", type: "output", x: 88, y: 50, icon: BrainCircuit, details: "MongoDB persistence logs feeding historic outcomes back to the hub.", status: "Active" }
+    { id: 13, label: "Long-Term Memory Node", type: "output", x: 88, y: 50, icon: History, details: "MongoDB persistence logs feeding historic outcomes back to the hub.", status: "Active" }
   ];
 
   // Links connecting the nodes
@@ -294,7 +294,7 @@ export default function Memory() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-center py-12 text-muted-foreground">
-                <BrainCircuit className="w-8 h-8 text-slate-300 animate-pulse mb-3" />
+                <History className="w-8 h-8 text-slate-300 animate-pulse mb-3" />
                 <p className="text-sm">Select any node on the graph to inspect its details and context links.</p>
               </div>
             )}

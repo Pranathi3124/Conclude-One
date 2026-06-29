@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cpu, Database, BrainCircuit, CheckCircle2, AlertTriangle, ShieldCheck, RefreshCw, Layers, Wrench, Search } from 'lucide-react';
+import { Cpu, Database, CheckCircle2, AlertTriangle, ShieldCheck, RefreshCw, Layers, Wrench, Search, Network } from 'lucide-react';
 
 export default function ExecutionGraph({ logs, status }) {
   if (!logs || logs.length === 0) return null;
@@ -19,7 +19,7 @@ export default function ExecutionGraph({ logs, status }) {
 
   const AgentCard = ({ log }) => {
     let Icon = Cpu;
-    if (log.agentName.includes('Planner')) Icon = BrainCircuit;
+    if (log.agentName.includes('Planner')) Icon = Cpu;
     if (log.agentName.includes('Context')) Icon = Database;
     if (log.agentName.includes('Risk')) Icon = AlertTriangle;
     if (log.agentName.includes('Recommendation')) Icon = Layers;
@@ -74,7 +74,7 @@ export default function ExecutionGraph({ logs, status }) {
   return (
     <div className="w-full bg-[#F9FAFB] border border-border/50 rounded-xl p-8 overflow-x-auto">
       <div className="flex items-center mb-8">
-        <BrainCircuit className="w-4 h-4 text-muted-foreground mr-2" />
+        <Network className="w-4 h-4 text-muted-foreground mr-2" />
         <h3 className="font-bold text-[11px] uppercase tracking-widest text-muted-foreground">Execution Pipeline</h3>
         {status === 'Processing' && (
           <span className="ml-4 inline-flex items-center text-[10px] font-bold uppercase tracking-widest text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full animate-pulse">

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { CheckCircle2, AlertTriangle, ShieldAlert, Cpu, FileText, ArrowLeft, BrainCircuit, History, Database, BookOpen, Layers, Check, Search, TrendingUp, X, ShieldCheck, Users, Activity, Zap, Clock, AlertOctagon, Info, BarChart3, Goal, Briefcase, PlayCircle } from "lucide-react";
+import { CheckCircle2, AlertTriangle, ShieldAlert, Cpu, FileText, ArrowLeft, History, Database, BookOpen, Layers, Check, Search, TrendingUp, X, ShieldCheck, Users, Activity, Zap, Clock, AlertOctagon, Info, BarChart3, Goal, Briefcase, PlayCircle, Network } from "lucide-react";
 import ExecutionGraph from "../components/ExecutionGraph";
 import { apiFetch } from "../lib/api";
 
@@ -82,7 +82,7 @@ export default function CaseDetail() {
           {plannerLog && (
             <div className="glass-panel rounded-xl p-5 border-l-4 border-indigo-500">
               <h2 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest flex items-center mb-4">
-                <BrainCircuit className="mr-2 h-4 w-4 text-indigo-500" /> Planner Decision
+                <Cpu className="mr-2 h-4 w-4 text-indigo-500" /> Planner Decision
               </h2>
               <div className="space-y-4 text-sm">
                 <div>
@@ -316,7 +316,7 @@ export default function CaseDetail() {
             </div>
           ) : (
              <div className="glass-panel rounded-xl p-16 text-center flex flex-col items-center justify-center space-y-6 bg-[#F9FAFB]">
-              <BrainCircuit className="h-10 w-10 text-primary opacity-50 animate-pulse" />
+              <Activity className="h-10 w-10 text-primary opacity-50 animate-pulse" />
               <div>
                 <p className="text-lg font-bold">Agents are reasoning...</p>
                 <p className="text-[13px] text-muted-foreground mt-2">Evaluating enterprise context and past memory.</p>
@@ -371,7 +371,7 @@ export default function CaseDetail() {
       {/* Execution Graph (Moved to bottom) */}
       <div className="w-full mt-10 border-t border-border/50 pt-10">
         <h2 className="text-[14px] font-bold text-foreground mb-6 flex items-center">
-          <BrainCircuit className="mr-2 h-5 w-5 text-indigo-500" /> Multi-Agent Execution Pipeline
+          <Network className="mr-2 h-5 w-5 text-indigo-500" /> Multi-Agent Execution Pipeline
         </h2>
         <ExecutionGraph logs={caseData.agentLogs} status={caseData.status} />
       </div>

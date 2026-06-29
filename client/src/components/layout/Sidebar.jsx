@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Briefcase, Bot, BookOpen, CheckSquare, BarChart3, Settings, BrainCircuit, LogOut } from "lucide-react";
+import { LayoutDashboard, Briefcase, Bot, BookOpen, CheckSquare, BarChart3, Settings, BrainCircuit, LogOut, Brain } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "../../context/AuthContext";
 import { apiFetch } from "../../lib/api";
@@ -33,7 +33,7 @@ export function Sidebar() {
     { name: "Cases", href: "/cases", icon: Briefcase },
     { name: "Agent Orchestration", href: "/agents", icon: Bot },
     { name: "Knowledge Center", href: "/knowledge", icon: BookOpen },
-    { name: "Memory", href: "/memory", icon: BrainCircuit },
+    { name: "Memory", href: "/memory", icon: Brain },
     { name: "Approvals", href: "/approvals", icon: CheckSquare, badge: approvalsCount > 0 ? approvalsCount : null },
     { name: "Analytics", href: "/analytics", icon: BarChart3 },
     { name: "Settings", href: "/settings", icon: Settings },

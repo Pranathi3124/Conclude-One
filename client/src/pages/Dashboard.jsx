@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Activity, ShieldAlert, CheckCircle2, Clock, ArrowRight, BrainCircuit, AlertTriangle, X } from "lucide-react";
+import { Activity, ShieldAlert, CheckCircle2, Clock, ArrowRight, AlertTriangle, X, Sparkles } from "lucide-react";
 import { apiFetch } from "../lib/api";
 
 export default function Dashboard() {
@@ -71,7 +71,7 @@ export default function Dashboard() {
             onClick={() => setIsModalOpen(true)}
             className="flex items-center px-4 py-2 bg-primary text-primary-foreground text-sm font-semibold rounded-md shadow-sm hover:bg-primary/90 transition-colors"
           >
-            <BrainCircuit className="mr-2 h-4 w-4" />
+            <Sparkles className="mr-2 h-4 w-4" />
             Analyze New Case
           </button>
         </div>
