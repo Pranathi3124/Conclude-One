@@ -1,6 +1,16 @@
 # Conclude One
 **Enterprise Decision Intelligence Platform**
 
+### 👥 Submission Details
+* **Team Name**: Conclude One
+* **Members**:
+  * Akuthota Pranathi
+  * A. Rakshitha
+  * Bhukya Ashok
+* **GitHub Repository**: [Pranathi3124/Conclude-One](https://github.com/Pranathi3124/Conclude-One)
+
+---
+
 Conclude One is a multi-agent orchestration platform that ingests customer meeting transcripts and CRM data, retrieves relevant enterprise playbooks (RAG), evaluates risk factors, and synthesizes actionable executive decisions.
 
 It features a state-of-the-art **LangGraph** orchestration workflow that coordinates specialized AI agents (Meeting, CRM, Context, Risk, Explainability, and Recommendation) to deliver highly contextualized, verifiable business recommendations.
