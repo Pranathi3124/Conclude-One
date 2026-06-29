@@ -1,12 +1,13 @@
 const { ChatGoogleGenerativeAI } = require("@langchain/google-genai");
+const { BaseProvider } = require("./base.provider");
 
-let globalRateLimitUntil = 0;
-
-class GeminiProvider {
-  constructor(apiKey) {
+class GeminiProvider extends BaseProvider {
+  constructor(apiKey, modelName = "gemini-2.5-flash") {
+    super(modelName === "gemini-2.5-flash-lite" ? "Gemini 2.5 Flash-Lite" : "Gemini 2.5 Flash");
+    this.modelName = modelName;
     this.model = new ChatGoogleGenerativeAI({
-      model: "gemini-2.5-flash",
-      maxOutputTokens: 2048,
+      model: modelName,
+      maxOutputTokens: 8192,
       temperature: 0.1,
       apiKey: apiKey,
       maxRetries: 0,
@@ -14,16 +15,9 @@ class GeminiProvider {
   }
 
   async invoke(prompt, schema = null) {
-    if (globalRateLimitUntil > Date.now()) {
-      console.log("Global rate limit active. Instantly falling back to MockProvider.");
-      const { MockProvider } = require("./mock.provider");
-      const fallback = new MockProvider();
-      return await fallback.invoke(prompt, schema);
-    }
-    
     try {
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Gemini API Timeout / Rate Limit Wait Exceeded")), 3500)
+        setTimeout(() => reject(new Error("Gemini API Timeout Exceeded")), 30000)
       );
       
       let aiPromise;
@@ -37,14 +31,10 @@ class GeminiProvider {
       const response = await Promise.race([aiPromise, timeoutPromise]);
       return schema ? response : response.content;
     } catch (error) {
-      if (error.message.includes("429") || error.message.includes("Rate Limit") || error.message.includes("Timeout")) {
-        globalRateLimitUntil = Date.now() + 60000; // 60 seconds circuit breaker
-      }
-      
-      console.warn("Gemini API Error (Rate Limit/Quota). Falling back to MockProvider for this node.", error.message);
-      const { MockProvider } = require("./mock.provider");
-      const fallback = new MockProvider();
-      return await fallback.invoke(prompt, schema);
+      console.error("\n[CRITICAL ERROR] Gemini API Invocation Failed:");
+      console.error(error.message);
+      console.error("The system will NOT fall back to mock data. Throwing error upstream.");
+      throw error;
     }
   }
 }

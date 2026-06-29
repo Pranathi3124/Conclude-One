@@ -1,19 +1,71 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Activity, ShieldAlert, CheckCircle2, Clock, ArrowRight, BrainCircuit, AlertTriangle } from "lucide-react";
+import { apiFetch } from "../lib/api";
 
 export default function Dashboard() {
   const [analytics, setAnalytics] = useState(null);
   const [activeCases, setActiveCases] = useState([]);
   const [pendingApprovals, setPendingApprovals] = useState([]);
   
+  const simulateWebhook = async () => {
+    try {
+      const scenarios = [
+        {
+          title: "Pricing Objection",
+          transcript: "Customer: Your new pricing tier is too expensive. We need a major discount to stay on board.",
+          notes: "Upcoming renewal. Exploring alternatives."
+        },
+        {
+          title: "Expansion Opportunity",
+          transcript: "Customer: We have a new team of 50 users and want to expand our licenses for the AI Analytics Suite.",
+          notes: "Healthy adoption. $150k expansion opportunity."
+        },
+        {
+          title: "Implementation Delay",
+          transcript: "Customer: The implementation of the new analytics module is blocked. We missed internal deadlines.",
+          notes: "Technical blocker in onboarding phase."
+        },
+        {
+          title: "High Churn Risk",
+          transcript: "Customer: We are canceling our subscription and moving to competitor X. The platform is too slow.",
+          notes: "Critical Risk. Competitor evaluation in progress."
+        },
+        {
+          title: "Feature Request",
+          transcript: "Customer: We need custom reporting features added to your roadmap before we renew.",
+          notes: "Stable account, requesting product parity."
+        }
+      ];
+      
+      const randomScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+
+      const payload = {
+        title: randomScenario.title,
+        customerId: `CUST-${Math.floor(Math.random() * 90000) + 10000}`,
+        inputs: {
+          meetingTranscript: randomScenario.transcript,
+          crmNotes: randomScenario.notes
+        }
+      };
+
+      const res = await apiFetch("http://localhost:3005/api/cases", {
+        method: "POST",
+        body: payload
+      });
+      if (res.ok) window.location.reload();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
-    fetch("http://localhost:3005/api/analytics")
+    apiFetch("http://localhost:3005/api/analytics")
       .then(res => res.json())
       .then(data => setAnalytics(data))
       .catch(err => console.error(err));
 
-    fetch("http://localhost:3005/api/cases")
+    apiFetch("http://localhost:3005/api/cases")
       .then(res => res.json())
       .then(data => {
         setActiveCases(data.filter(c => c.status === "Processing").slice(0, 4));
@@ -30,6 +82,15 @@ export default function Dashboard() {
           <p className="text-muted-foreground mt-1 text-[15px]">
             Real-time multi-agent decision intelligence.
           </p>
+        </div>
+        <div className="mt-4 md:mt-0 flex items-center space-x-3">
+          <button 
+            onClick={simulateWebhook}
+            className="flex items-center px-4 py-2 bg-primary text-primary-foreground text-sm font-semibold rounded-md shadow-sm hover:bg-primary/90 transition-colors"
+          >
+            <BrainCircuit className="mr-2 h-4 w-4" />
+            Simulate Enterprise Case
+          </button>
         </div>
       </div>
       
@@ -115,7 +176,7 @@ export default function Dashboard() {
                     Review Required
                   </span>
                 </div>
-                <div className="text-[13px] text-muted-foreground truncate">{c.customerId} • Confidence {c.aiData?.recommendation?.confidenceScore}%</div>
+                <div className="text-[13px] text-muted-foreground truncate">{c.customerId} • Confidence {c.recommendation?.confidence || c.recommendation?.confidenceScore || 95}%</div>
               </Link>
             )) : (
               <div className="flex flex-col items-center justify-center h-40 text-muted-foreground border border-dashed border-border rounded-lg bg-[#F9FAFB]">

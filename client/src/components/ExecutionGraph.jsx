@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cpu, Database, BrainCircuit, CheckCircle2, AlertTriangle, ShieldCheck, RefreshCw, Layers } from 'lucide-react';
+import { Cpu, Database, BrainCircuit, CheckCircle2, AlertTriangle, ShieldCheck, RefreshCw, Layers, Wrench, Search } from 'lucide-react';
 
 export default function ExecutionGraph({ logs, status }) {
   if (!logs || logs.length === 0) return null;
@@ -25,23 +25,48 @@ export default function ExecutionGraph({ logs, status }) {
     if (log.agentName.includes('Recommendation')) Icon = Layers;
     if (log.agentName.includes('Explainability')) Icon = ShieldCheck;
 
+    // Tool Call Mapping
+    let tools = [];
+    if (log.agentName === 'Meeting Agent') tools = ['Transcript Parser Tool'];
+    if (log.agentName === 'CRM Context Agent') tools = ['CRM Lookup Tool'];
+    if (log.agentName === 'Enterprise Context Agent') tools = ['Vector Search Tool', 'ChromaDB'];
+    if (log.agentName === 'Memory Agent') tools = ['Memory Lookup Tool'];
+
     return (
-      <div className="relative flex flex-col items-center p-4 bg-white border border-border/50 rounded-lg shadow-sm hover:shadow-md transition-shadow w-full">
-        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-foreground mb-3 border border-border/50">
-          <Icon className="w-4 h-4" />
+      <div className="flex flex-col items-center w-full">
+        <div className="relative flex flex-col items-center p-4 bg-white border border-border/50 rounded-lg shadow-sm hover:shadow-md transition-shadow w-full z-10">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-foreground mb-3 border border-border/50">
+            <Icon className="w-4 h-4" />
+          </div>
+          <div className="text-[11px] font-bold text-center tracking-wide">{log.agentName}</div>
+          <div className="text-[10px] text-muted-foreground mt-1 text-center truncate w-full px-1" title={log.outputSummary}>
+            {log.outputSummary}
+          </div>
+          <div className="mt-2 flex items-center space-x-1">
+            {log.status === 'Success' ? (
+              <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+            ) : (
+              <AlertTriangle className="w-3 h-3 text-destructive" />
+            )}
+            <span className="text-[10px] text-muted-foreground">{log.executionTimeMs}ms</span>
+          </div>
         </div>
-        <div className="text-[11px] font-bold text-center tracking-wide">{log.agentName}</div>
-        <div className="text-[10px] text-muted-foreground mt-1 text-center truncate w-full px-1" title={log.outputSummary}>
-          {log.outputSummary}
-        </div>
-        <div className="mt-2 flex items-center space-x-1">
-          {log.status === 'Success' ? (
-            <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-          ) : (
-            <AlertTriangle className="w-3 h-3 text-destructive" />
-          )}
-          <span className="text-[10px] text-muted-foreground">{log.executionTimeMs}ms</span>
-        </div>
+
+        {/* Tools rendering below the agent */}
+        {tools.length > 0 && (
+          <div className="flex flex-col items-center w-full mt-2 space-y-2">
+            {tools.map((tool, idx) => (
+              <React.Fragment key={idx}>
+                {idx === 0 && <div className="w-[1px] h-3 bg-border"></div>}
+                <div className="flex items-center space-x-2 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-md text-[10px] font-mono text-gray-600 shadow-sm">
+                  {tool.includes('Chroma') ? <Database className="w-3 h-3 text-indigo-500" /> : <Wrench className="w-3 h-3 text-gray-400" />}
+                  <span>{tool}</span>
+                </div>
+                {idx < tools.length - 1 && <div className="w-[1px] h-3 bg-border"></div>}
+              </React.Fragment>
+            ))}
+          </div>
+        )}
       </div>
     );
   };

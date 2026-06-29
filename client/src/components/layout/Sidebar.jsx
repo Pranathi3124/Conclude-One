@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Briefcase, Bot, BookOpen, CheckSquare, BarChart3, Settings, BrainCircuit } from "lucide-react";
+import { LayoutDashboard, Briefcase, Bot, BookOpen, CheckSquare, BarChart3, Settings, BrainCircuit, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "../../context/AuthContext";
+import { apiFetch } from "../../lib/api";
 
 export function Sidebar() {
   const location = useLocation();
+  const { user, logout } = useAuth();
   const [approvalsCount, setApprovalsCount] = useState(0);
 
   useEffect(() => {
     const fetchCount = async () => {
       try {
-        const res = await fetch("http://localhost:3005/api/approvals");
+        const res = await apiFetch("http://localhost:3005/api/approvals");
         if (res.ok) {
           const data = await res.json();
           setApprovalsCount(data.length);
@@ -26,11 +29,11 @@ export function Sidebar() {
   }, []);
 
   const navigation = [
-    { name: "Dashboard", href: "/", icon: LayoutDashboard },
+    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "Cases", href: "/cases", icon: Briefcase },
     { name: "Agent Orchestration", href: "/agents", icon: Bot },
     { name: "Knowledge Center", href: "/knowledge", icon: BookOpen },
-    { name: "Memory", href: "#", icon: BrainCircuit },
+    { name: "Memory", href: "/memory", icon: BrainCircuit },
     { name: "Approvals", href: "/approvals", icon: CheckSquare, badge: approvalsCount > 0 ? approvalsCount : null },
     { name: "Analytics", href: "/analytics", icon: BarChart3 },
   ];
@@ -79,17 +82,24 @@ export function Sidebar() {
       </div>
 
       <div className="p-4 bg-[#F9FAFB]">
-        <button className="flex w-full items-center rounded-md px-3 py-2 text-[13px] font-medium text-muted-foreground hover:bg-gray-100 hover:text-foreground transition-colors mb-4">
-          <Settings className="mr-3 h-4 w-4 flex-shrink-0" />
-          Settings
+        <button
+          onClick={logout}
+          className="flex w-full items-center rounded-md px-3 py-2 text-[13px] font-medium text-red-600 hover:bg-red-50 transition-colors mb-4"
+        >
+          <LogOut className="mr-3 h-4 w-4 flex-shrink-0" />
+          Log Out
         </button>
         <div className="flex items-center space-x-3 px-3 py-2 border-t border-border/50 pt-4">
           <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-[10px]">
-            CO
+            {user?.name ? user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : "CO"}
           </div>
-          <div className="flex flex-col">
-            <span className="text-[13px] font-semibold text-foreground leading-tight">Admin User</span>
-            <span className="text-[11px] text-muted-foreground leading-tight">Enterprise Plan</span>
+          <div className="flex flex-col flex-1 overflow-hidden">
+            <span className="text-[13px] font-semibold text-foreground leading-tight truncate">
+              {user?.name || "Admin User"}
+            </span>
+            <span className="text-[11px] text-muted-foreground leading-tight truncate">
+              {user?.email || "Enterprise Plan"}
+            </span>
           </div>
         </div>
       </div>

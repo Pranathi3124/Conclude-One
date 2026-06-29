@@ -20,7 +20,6 @@ const contextNode = async (state) => await contextAgent.run(state);
 const gatherStateNode = async (state) => await gatherStateAgent.run(state);
 const riskNode = async (state) => await riskAgent.run(state);
 const recommendationNode = async (state) => await recommendationAgent.run(state);
-const explainabilityNode = async (state) => await explainabilityAgent.run(state);
 const memoryNode = async (state) => await memoryAgent.run(state);
 
 const routeRecommendation = (state) => {
@@ -28,9 +27,9 @@ const routeRecommendation = (state) => {
   const retries = state.retryCount || 0;
   
   if (conf >= 90 || retries >= 3) {
-    return "explainability_node";
+    return "memory_node";
   } else if (conf >= 70) {
-    return "explainability_node"; // The UI or Explainability node will flag it as 'Human Review Required'
+    return "memory_node"; // The UI will flag it as 'Human Review Required'
   } else {
     // Confidence based loop-back
     return "planner_node";
@@ -52,7 +51,6 @@ const buildGraph = () => {
   builder.addNode("gather_state_node", gatherStateNode);
   builder.addNode("risk_node", riskNode);
   builder.addNode("recommendation_node", recommendationNode);
-  builder.addNode("explainability_node", explainabilityNode);
   builder.addNode("memory_node", memoryNode);
 
   builder.addEdge(START, "planner_node");
@@ -76,7 +74,6 @@ const buildGraph = () => {
   // Conditional routing based on confidence
   builder.addConditionalEdges("recommendation_node", routeRecommendation);
 
-  builder.addEdge("explainability_node", "memory_node");
   builder.addEdge("memory_node", END);
 
   return builder.compile();

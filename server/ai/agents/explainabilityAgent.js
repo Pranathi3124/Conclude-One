@@ -11,10 +11,10 @@ const schema = z.object({
 
 const run = async (state) => {
   const startTime = Date.now();
-  const provider = ProviderFactory.getProvider();
+  const provider = ProviderFactory.getProvider("EXPLAINABILITY_MODEL");
   
   const actionStr = state.recommendation?.recommendation || "unknown action";
-  const result = await provider.invoke(generateExplainabilityPrompt(actionStr, state.crmContext, state.riskAssessment), schema);
+  const result = await provider.invoke(generateExplainabilityPrompt(actionStr, state), schema);
 
   return {
     explanation: result,

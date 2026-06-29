@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Briefcase, Plus, ChevronRight, FileText, X } from "lucide-react";
+import { Briefcase, Plus, ChevronRight, FileText, X, Trash2 } from "lucide-react";
+import { apiFetch } from "../lib/api";
 
 export default function Cases() {
   const [cases, setCases] = useState([]);
@@ -16,8 +17,8 @@ export default function Cases() {
     emails: ""
   });
 
-  useEffect(() => {
-    fetch("http://localhost:3005/api/cases")
+  const fetchCases = () => {
+    apiFetch("http://localhost:3005/api/cases")
       .then(res => res.json())
       .then(data => {
         setCases(data);
@@ -27,16 +28,31 @@ export default function Cases() {
         console.error(err);
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchCases();
   }, []);
+
+  const handleDeleteCase = async (caseId) => {
+    if (!window.confirm("Are you sure you want to delete this case?")) return;
+    try {
+      await apiFetch(`http://localhost:3005/api/cases/${caseId}`, {
+        method: "DELETE"
+      });
+      setCases(prev => prev.filter(c => c._id !== caseId));
+    } catch(e) {
+      console.error(e);
+    }
+  };
 
   const handleCreateCase = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await fetch("http://localhost:3005/api/cases", {
+      const res = await apiFetch("http://localhost:3005/api/cases", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: {
           title: formData.title || "New Analysis Case",
           customerId: formData.customerId || "UNKNOWN",
           inputs: {
@@ -44,7 +60,7 @@ export default function Cases() {
             crmNotes: formData.crmNotes,
             emails: formData.emails
           }
-        })
+        }
       });
       const newCase = await res.json();
       window.location.href = `/cases/${newCase._id}`;
@@ -84,7 +100,7 @@ export default function Cases() {
             ) : cases.length === 0 ? (
               <tr><td colSpan="4" className="px-6 py-8 text-center text-muted-foreground">No cases found. Create a new case to start.</td></tr>
             ) : (
-              cases.reverse().map((c) => (
+              [...cases].reverse().map((c) => (
                 <tr key={c._id} className="border-b border-border/50 hover:bg-gray-50/50 transition-colors">
                   <td className="px-6 py-4 font-medium">
                     <div className="flex items-center space-x-3">
@@ -99,15 +115,26 @@ export default function Cases() {
                         ? 'bg-emerald-50 text-emerald-700 border-emerald-300' 
                         : c.status === 'Requires Approval' 
                           ? 'bg-amber-50 text-amber-700 border-amber-300' 
-                          : 'bg-blue-50 text-blue-700 border-blue-300'
+                          : c.status === 'Failed'
+                            ? 'bg-red-50 text-red-700 border-red-300'
+                            : 'bg-blue-50 text-blue-700 border-blue-300'
                     }`}>
                       {c.status}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Link to={`/cases/${c._id}`} className="inline-flex items-center text-[13px] font-semibold text-primary hover:underline">
-                      View Details <ChevronRight className="ml-1 h-3 w-3" />
-                    </Link>
+                    <div className="flex items-center justify-end space-x-4">
+                      <Link to={`/cases/${c._id}`} className="inline-flex items-center text-[13px] font-semibold text-primary hover:underline">
+                        View Details <ChevronRight className="ml-1 h-3 w-3" />
+                      </Link>
+                      <button 
+                        onClick={() => handleDeleteCase(c._id)} 
+                        className="text-muted-foreground hover:text-red-600 transition-colors p-1"
+                        title="Delete Case"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

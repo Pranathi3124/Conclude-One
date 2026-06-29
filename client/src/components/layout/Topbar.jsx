@@ -1,9 +1,10 @@
 import { Bell, Search, UserCircle } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export function Topbar() {
   return (
     <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-background px-6">
-      <div className="flex flex-1">
+      <div className="flex flex-1 items-center">
         <form className="flex w-full md:ml-0" action="#" method="GET">
           <label htmlFor="search-field" className="sr-only">
             Search

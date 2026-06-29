@@ -14,7 +14,7 @@ const schema = z.object({
 
 const run = async (state) => {
   const startTime = Date.now();
-  const provider = ProviderFactory.getProvider();
+  const provider = ProviderFactory.getProvider("MEETING_MODEL");
   
   const transcript = state.inputs?.meetingTranscript || "No transcript provided.";
   const result = await provider.invoke(generateMeetingPrompt(transcript), schema);

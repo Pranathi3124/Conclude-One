@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
-import { ShieldAlert, CheckCircle2, XCircle, Edit, FileText } from "lucide-react";
+import { ShieldAlert, CheckCircle2, XCircle, Edit, FileText, Check } from "lucide-react";
 import { Link } from "react-router-dom";
+import { apiFetch } from "../lib/api";
 
 export default function Approvals() {
   const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingCaseId, setEditingCaseId] = useState(null);
+  const [modifiedText, setModifiedText] = useState("");
 
   const fetchApprovals = () => {
-    fetch("http://localhost:3005/api/cases")
+    apiFetch("http://localhost:3005/api/approvals")
       .then(res => res.json())
       .then(data => {
-        setCases(data.filter(c => c.status === 'Requires Approval'));
+        setCases(data);
         setLoading(false);
       })
       .catch(err => {
@@ -25,9 +28,35 @@ export default function Approvals() {
 
   const handleApprove = async (caseId) => {
     try {
-      await fetch(`http://localhost:3005/api/approvals/${caseId}/approve`, {
+      await apiFetch(`http://localhost:3005/api/approvals/${caseId}/approve`, {
         method: "POST"
       });
+      fetchApprovals();
+    } catch(e) {
+      console.error(e);
+    }
+  };
+
+  const handleReject = async (caseId) => {
+    try {
+      await apiFetch(`http://localhost:3005/api/approvals/${caseId}/reject`, {
+        method: "POST"
+      });
+      fetchApprovals();
+    } catch(e) {
+      console.error(e);
+    }
+  };
+
+  const handleModifySubmit = async (caseId) => {
+    if (!modifiedText.trim()) return;
+    try {
+      await apiFetch(`http://localhost:3005/api/approvals/${caseId}/modify`, {
+        method: "POST",
+        body: { primaryRecommendation: modifiedText }
+      });
+      setEditingCaseId(null);
+      setModifiedText("");
       fetchApprovals();
     } catch(e) {
       console.error(e);
@@ -53,52 +82,74 @@ export default function Approvals() {
             <p className="text-muted-foreground mt-1 text-sm">There are no pending recommendations requiring your approval.</p>
           </div>
         ) : (
-          cases.map(c => (
-            <div key={c._id} className="glass-panel p-0 rounded-xl flex flex-col">
-              <div className="p-6 bg-[#F9FAFB] border-b border-border/50 flex justify-between items-center rounded-t-xl">
-                <div className="flex items-center space-x-3">
-                  <FileText className="h-5 w-5 text-muted-foreground" />
-                  <div>
-                    <h3 className="font-semibold text-[15px]">{c.title}</h3>
-                    <p className="text-[13px] text-muted-foreground mt-0.5">Customer: {c.customerId}</p>
-                  </div>
-                </div>
-                <Link to={`/cases/${c._id}`} className="inline-flex items-center text-[13px] font-semibold text-primary hover:underline">
-                  View Full Case Details
-                </Link>
-              </div>
-              <div className="p-8">
-                <div className="flex items-start justify-between mb-6">
-                  <div className="flex items-start space-x-3">
-                    <ShieldAlert className="h-5 w-5 text-primary mt-1 shrink-0" />
+          cases.map(c => {
+            const isEditing = editingCaseId === c._id;
+            return (
+              <div key={c._id} className="glass-panel p-0 rounded-xl flex flex-col">
+                <div className="p-6 bg-[#F9FAFB] border-b border-border/50 flex justify-between items-center rounded-t-xl">
+                  <div className="flex items-center space-x-3">
+                    <FileText className="h-5 w-5 text-muted-foreground" />
                     <div>
-                      <span className="font-bold text-[11px] uppercase tracking-widest text-muted-foreground block mb-1">Suggested Action</span>
-                      <span className="text-xl font-bold text-foreground">{c.recommendation?.nextBestAction}</span>
+                      <h3 className="font-semibold text-[15px]">{c.title}</h3>
+                      <p className="text-[13px] text-muted-foreground mt-0.5">Customer: {c.customerId}</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                     <span className="font-bold text-[11px] uppercase tracking-widest text-muted-foreground block mb-1">Confidence</span>
-                     <span className="text-xl font-bold text-emerald-600">{c.recommendation?.confidenceScore || 92}%</span>
-                  </div>
+                  <Link to={`/cases/${c._id}`} className="inline-flex items-center text-[13px] font-semibold text-primary hover:underline">
+                    View Full Case Details
+                  </Link>
                 </div>
-                <p className="text-[14px] leading-relaxed text-muted-foreground mb-8 pl-8 border-l-2 border-border/50 ml-1 py-1">
-                  {c.recommendation?.businessReasoning}
-                </p>
-                
-                <div className="flex space-x-3 pl-8">
-                  <button onClick={() => handleApprove(c._id)} className="inline-flex items-center justify-center rounded-md text-[13px] font-semibold transition-colors bg-emerald-600 text-white hover:bg-emerald-700 h-9 px-4 py-2 cursor-pointer shadow-sm active:scale-95">
-                    <CheckCircle2 className="mr-2 h-4 w-4" /> Approve & Execute
-                  </button>
-                  <button className="inline-flex items-center justify-center rounded-md text-[13px] font-semibold transition-colors border border-border bg-white hover:bg-gray-50 h-9 px-4 py-2 text-destructive cursor-pointer shadow-sm active:scale-95">
-                    <XCircle className="mr-2 h-4 w-4" /> Reject
-                  </button>
-                  <button className="inline-flex items-center justify-center rounded-md text-[13px] font-semibold transition-colors border border-border bg-white hover:bg-gray-50 h-9 px-4 py-2 text-foreground cursor-pointer shadow-sm active:scale-95">
-                    <Edit className="mr-2 h-4 w-4" /> Modify Action
-                  </button>
+                <div className="p-8">
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="flex items-start space-x-3 flex-grow mr-6">
+                      <ShieldAlert className="h-5 w-5 text-primary mt-1 shrink-0" />
+                      <div className="w-full">
+                        <span className="font-bold text-[11px] uppercase tracking-widest text-muted-foreground block mb-1">Suggested Action</span>
+                        {isEditing ? (
+                          <textarea 
+                            className="w-full text-base font-medium text-foreground border border-input rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-primary min-h-[80px]"
+                            value={modifiedText}
+                            onChange={(e) => setModifiedText(e.target.value)}
+                          />
+                        ) : (
+                          <span className="text-xl font-bold text-foreground">{c.recommendation?.primaryRecommendation || c.recommendation?.recommendation || c.recommendation?.nextBestAction}</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                       <span className="font-bold text-[11px] uppercase tracking-widest text-muted-foreground block mb-1">Confidence</span>
+                       <span className="text-xl font-bold text-emerald-600">{c.recommendation?.confidence || c.recommendation?.confidenceScore || 92}%</span>
+                    </div>
+                  </div>
+                  <p className="text-[14px] leading-relaxed text-muted-foreground mb-8 pl-8 border-l-2 border-border/50 ml-1 py-1">
+                    {c.recommendation?.businessReasoning}
+                  </p>
+                  
+                  {isEditing ? (
+                    <div className="flex space-x-3 pl-8">
+                      <button onClick={() => handleModifySubmit(c._id)} className="inline-flex items-center justify-center rounded-md text-[13px] font-semibold transition-colors bg-emerald-600 text-white hover:bg-emerald-700 h-9 px-4 py-2 cursor-pointer shadow-sm active:scale-95">
+                        <Check className="mr-2 h-4 w-4" /> Save & Approve
+                      </button>
+                      <button onClick={() => { setEditingCaseId(null); setModifiedText(""); }} className="inline-flex items-center justify-center rounded-md text-[13px] font-semibold transition-colors border border-border bg-white hover:bg-gray-50 h-9 px-4 py-2 text-foreground cursor-pointer shadow-sm active:scale-95">
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex space-x-3 pl-8">
+                      <button onClick={() => handleApprove(c._id)} className="inline-flex items-center justify-center rounded-md text-[13px] font-semibold transition-colors bg-emerald-600 text-white hover:bg-emerald-700 h-9 px-4 py-2 cursor-pointer shadow-sm active:scale-95">
+                        <CheckCircle2 className="mr-2 h-4 w-4" /> Approve & Execute
+                      </button>
+                      <button onClick={() => handleReject(c._id)} className="inline-flex items-center justify-center rounded-md text-[13px] font-semibold transition-colors border border-border bg-white hover:bg-gray-50 h-9 px-4 py-2 text-destructive cursor-pointer shadow-sm active:scale-95">
+                        <XCircle className="mr-2 h-4 w-4" /> Reject
+                      </button>
+                      <button onClick={() => { setEditingCaseId(c._id); setModifiedText(c.recommendation?.primaryRecommendation || c.recommendation?.recommendation || c.recommendation?.nextBestAction || ""); }} className="inline-flex items-center justify-center rounded-md text-[13px] font-semibold transition-colors border border-border bg-white hover:bg-gray-50 h-9 px-4 py-2 text-foreground cursor-pointer shadow-sm active:scale-95">
+                        <Edit className="mr-2 h-4 w-4" /> Modify Action
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>

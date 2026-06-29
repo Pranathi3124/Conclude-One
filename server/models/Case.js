@@ -1,26 +1,37 @@
 const mongoose = require("mongoose");
 
 const recommendationSchema = new mongoose.Schema({
-  nextBestAction: String,
+  primaryRecommendation: String,
   businessReasoning: String,
-  confidenceScore: Number,
-  evidence: [String],
+  supportingEvidence: [String],
+  executionPlan: [String],
+  expectedBusinessImpact: String,
+  priority: { type: String, enum: ["Critical", "High", "Medium", "Low"] },
+  successMetrics: [String],
+  risksIfIgnored: [String],
+  confidence: Number,
   status: {
     type: String,
-    enum: ["Pending Approval", "Approved", "Rejected", "Modified"],
+    enum: ["Pending", "Pending Approval", "Approval Needed", "Approved", "Rejected", "Modified"],
     default: "Pending Approval"
   },
-  modifiedAction: String
+  aiProvider: String
 });
 
 const caseSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   title: String,
   customerId: String,
   status: {
     type: String,
-    enum: ["Pending", "Processing", "Requires Approval", "Completed", "Rejected"],
+    enum: ["Pending", "Processing", "Requires Approval", "Completed", "Rejected", "Failed"],
     default: "Pending"
   },
+  error: String,
   inputs: {
     meetingTranscript: String,
     additionalNotes: String
